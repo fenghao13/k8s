@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lztest-dev-weblogic-svc #定义服务名称 注意名字后缀加svc.代表是服务
+spec:
+  selector:
+    app: lztest-dev-weblogic #关联的Pod标签
+  ports:
+    - name: lztest-dev-weblogic-http  #
+      port: 5556 #对外服务暴露端口
+      protocol: TCP
+      targetPort: 5556 #目标容器暴露的端口
+      nodePort: 9098 #节点端口
+    - name: lztest-dev-weblogic-admin
+      port: 7001 #服务向集群内部提供访问端口
+      protocol: TCP
+      targetPort: 7001 #目标容器端口
+      nodePort: 9097 #节点暴露端口
