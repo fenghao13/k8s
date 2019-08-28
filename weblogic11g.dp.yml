@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lztest-dev-weblogic   #元数据名称,命名按规范
+spec:
+  replicas: 1       #副本数
+  template:    
+    metadata:
+      labels:
+        app: lztest-dev-weblogic #打标签，命名按规范
+        version: "1.0"
+    spec:
+      volumes:
+      - name: testdata  #定义一个挂载设备的名字 
+        nfs:
+          server: 10.16.17.190
+          path: "/nfs_disk/testdata"	  #nfs服务端的文件路径
+      - name: localtime 
+        hostPath:
+          path: /etc/localtime #挂载设备类型为hostpath,路径为宿主机下的/etc/localtime
+      containers:
+      - name: lztest-dev-weblogic-container #容器的名字，注意名字后缀加container
+        image: "hub.bestclouds.com/lztest/centos-jdk1645-weblogic11g-domain-init:1.0"           
+        imagePullPolicy: Always #每次启动时检查和更新（从registery）images的策略
+        ports:
+        - name: http
+          containerPort: 5556 
+        - name: admin  
+          containerPort: 7001 #容器开放对外端口
+        volumeMounts:  #挂载持久存储卷
+        - name: localtime 
+          mountPath: /etc/localtime
+        - name: testdata #挂载设备的名字，与volumes.name 需要对应
+          mountPath: /nfsdata #挂载到容器的/nfsdata路径下 
