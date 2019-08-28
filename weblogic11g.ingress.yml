@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lztest-dev-weblogic-ingress #ingress名字，以ingress结尾
+  namespace: lztestnamespace #指定service的命名空间
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: testdev.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: lztest-dev-weblogic-svc #匹配service的名字
+          servicePort: 7001  #匹配service的端口
